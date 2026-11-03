@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'SIADU SARANA') - SMK Negeri 5 Surakarta</title>
+    <title>@yield('title', 'SIADU') - SMK Negeri 5 Surakarta</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
             <a href="{{ route('pengaduan.create') }}" class="flex min-w-0 items-center gap-2 sm:gap-3">
                 <img src="{{ asset('images/logo_smk.png') }}" alt="Logo SMK Negeri 5 Surakarta" class="w-9 h-9 sm:w-10 sm:h-10 shrink-0 object-contain">
                 <div class="leading-tight">
-                    <p class="font-semibold text-sm sm:text-base text-slate-800 tracking-tight">SIADU SARANA</p>
+                    <p class="font-semibold text-sm sm:text-base text-slate-800 tracking-tight">SIADU</p>
                     <p class="text-xs text-slate-500">SMK Negeri 5 Surakarta</p>
                 </div>
             </a>
@@ -103,7 +103,7 @@
 
     <footer class="border-t border-slate-200 bg-white">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 py-5 text-xs text-slate-400 text-center">
-            &copy; {{ date('Y') }} SIADU SARANA &mdash; SMK Negeri 5 Surakarta. Seluruh hak cipta dilindungi.
+            &copy; {{ date('Y') }} SIADU &mdash; SMK Negeri 5 Surakarta. Seluruh hak cipta dilindungi.
         </div>
     </footer>
 

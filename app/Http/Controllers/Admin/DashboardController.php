@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\PengaduanExport;
 use App\Http\Controllers\Controller;
 use App\Models\Pengaduan;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DashboardController extends Controller
 {
@@ -17,6 +19,19 @@ class DashboardController extends Controller
             'proses' => Pengaduan::where('status', 'proses')->count(),
             'selesai' => Pengaduan::where('status', 'selesai')->count(),
         ];
+
+        $bulanAwal = now()->startOfMonth()->subMonths(5);
+        $chartLabels = [];
+        $chartData = [];
+
+        for ($offset = 0; $offset < 6; $offset++) {
+            $bulan = $bulanAwal->copy()->addMonths($offset);
+            $chartLabels[] = $bulan->locale('id')->translatedFormat('F Y');
+            $chartData[] = Pengaduan::query()
+                ->where('created_at', '>=', $bulan->copy()->startOfMonth())
+                ->where('created_at', '<', $bulan->copy()->addMonth()->startOfMonth())
+                ->count();
+        }
 
         $pengaduans = Pengaduan::query()
             ->when($request->filled('cari'), function ($q) use ($request) {
@@ -39,7 +54,17 @@ class DashboardController extends Controller
             'pengaduans' => $pengaduans,
             'cari' => $request->get('cari', ''),
             'statusAktif' => $request->get('status', 'semua'),
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(
+            new PengaduanExport,
+            'rekap-pengaduan-'.now()->format('Y-m-d').'.xlsx'
+        );
     }
 
     // Halaman detail satu pengaduan

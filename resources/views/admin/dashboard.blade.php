@@ -3,33 +3,53 @@
 @section('title', 'Dashboard')
 
 @section('content')
-<h1 class="text-2xl font-bold text-slate-800">Dashboard Pengaduan Sarpras</h1>
+<h1 class="text-2xl font-bold text-slate-800">Dashboard Pengaduan SIADU</h1>
 <p class="text-slate-500 text-sm mt-1">Ikhtisar dan manajemen pemeliharaan sarana prasarana sekolah.</p>
 
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-6">
-    <div class="min-w-0 bg-white border border-slate-200 rounded-2xl shadow-sm p-3 sm:p-5">
-        <p class="text-xs font-medium text-slate-500 uppercase">Total Aduan</p>
-        <p class="text-2xl sm:text-3xl font-bold text-slate-800 mt-1" data-count="{{ $stats['total'] }}">{{ $stats['total'] }}</p>
+<div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:col-span-1">
+        <div class="min-w-0 bg-white border border-slate-200 rounded-2xl shadow-sm p-3 sm:p-5">
+            <p class="text-xs font-medium text-slate-500 uppercase">Total Aduan</p>
+            <p class="text-2xl sm:text-3xl font-bold text-slate-800 mt-1" data-count="{{ $stats['total'] }}">{{ $stats['total'] }}</p>
+        </div>
+        <div class="min-w-0 bg-blue-50 border border-blue-100 rounded-2xl p-3 sm:p-5">
+            <p class="text-xs font-medium text-blue-600 uppercase">Dilaporkan</p>
+            <p class="text-2xl sm:text-3xl font-bold text-blue-700 mt-1" data-count="{{ $stats['dilaporkan'] }}">{{ $stats['dilaporkan'] }}</p>
+        </div>
+        <div class="min-w-0 bg-amber-50 border border-amber-100 rounded-2xl p-3 sm:p-5">
+            <p class="text-xs font-medium text-amber-600 uppercase">Proses</p>
+            <p class="text-2xl sm:text-3xl font-bold text-amber-700 mt-1" data-count="{{ $stats['proses'] }}">{{ $stats['proses'] }}</p>
+        </div>
+        <div class="min-w-0 bg-green-50 border border-green-100 rounded-2xl p-3 sm:p-5">
+            <p class="text-xs font-medium text-green-600 uppercase">Selesai</p>
+            <p class="text-2xl sm:text-3xl font-bold text-green-700 mt-1" data-count="{{ $stats['selesai'] }}">{{ $stats['selesai'] }}</p>
+        </div>
     </div>
-    <div class="min-w-0 bg-blue-50 border border-blue-100 rounded-2xl p-3 sm:p-5">
-        <p class="text-xs font-medium text-blue-600 uppercase">Dilaporkan</p>
-        <p class="text-2xl sm:text-3xl font-bold text-blue-700 mt-1" data-count="{{ $stats['dilaporkan'] }}">{{ $stats['dilaporkan'] }}</p>
-    </div>
-    <div class="min-w-0 bg-amber-50 border border-amber-100 rounded-2xl p-3 sm:p-5">
-        <p class="text-xs font-medium text-amber-600 uppercase">Proses</p>
-        <p class="text-2xl sm:text-3xl font-bold text-amber-700 mt-1" data-count="{{ $stats['proses'] }}">{{ $stats['proses'] }}</p>
-    </div>
-    <div class="min-w-0 bg-green-50 border border-green-100 rounded-2xl p-3 sm:p-5">
-        <p class="text-xs font-medium text-green-600 uppercase">Selesai</p>
-        <p class="text-2xl sm:text-3xl font-bold text-green-700 mt-1" data-count="{{ $stats['selesai'] }}">{{ $stats['selesai'] }}</p>
-    </div>
+
+    <section class="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2" aria-labelledby="chart-title">
+        <div class="border-b border-slate-100 px-4 py-4 sm:px-5">
+            <h2 id="chart-title" class="font-semibold text-slate-800">Statistik Pengaduan per Bulan</h2>
+        </div>
+        <div class="relative h-64 p-3 sm:h-72 sm:p-5">
+            <canvas id="pengaduanChart" role="img" aria-label="Diagram batang jumlah pengaduan selama enam bulan terakhir"></canvas>
+        </div>
+    </section>
 </div>
 
 <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mt-6 overflow-hidden">
-    <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-            <h2 class="font-semibold text-slate-800">Data Pengaduan Masuk</h2>
-            <p class="text-xs text-slate-500">Daftar laporan sarana yang masuk dari siswa</p>
+    <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-col gap-3">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h2 class="font-semibold text-slate-800">Data Pengaduan Masuk</h2>
+                <p class="text-xs text-slate-500">Daftar laporan sarana yang masuk dari siswa</p>
+            </div>
+            <a href="{{ route('admin.pengaduan.export') }}"
+               class="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-green-700 px-4 py-2 text-sm font-medium text-green-700 transition-colors hover:bg-green-50 sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0l-4-4m4 4l4-4M5 17v3h14v-3" />
+                </svg>
+                Download Rekap Excel
+            </a>
         </div>
         <form method="GET" class="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row">
             <div class="flex min-w-0 gap-2 sm:flex-1">
@@ -98,32 +118,47 @@
                 Menampilkan {{ $pengaduans->firstItem() }}&ndash;{{ $pengaduans->lastItem() }} dari {{ $pengaduans->total() }} laporan
             </p>
 
-            <div class="flex items-center gap-1.5">
-                <a href="{{ $pengaduans->previousPageUrl() ?? '#' }}"
-                   class="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-300 text-slate-500 {{ $pengaduans->onFirstPage() ? 'opacity-40 pointer-events-none' : 'hover:bg-slate-50 hover:border-slate-400' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                </a>
+            <nav aria-label="Navigasi halaman pengaduan" class="flex flex-wrap items-center justify-center gap-1">
+                @if ($pengaduans->onFirstPage())
+                    <span aria-disabled="true" class="rounded-lg border border-slate-200 px-2 sm:px-3 py-2 text-xs sm:text-sm text-slate-400">
+                        Sebelumnya
+                    </span>
+                @else
+                    <a href="{{ $pengaduans->previousPageUrl() }}" rel="prev"
+                       class="rounded-lg border border-slate-300 px-2 sm:px-3 py-2 text-xs sm:text-sm text-slate-600 hover:bg-slate-50">
+                        Sebelumnya
+                    </a>
+                @endif
 
                 @foreach ($pengaduans->getUrlRange(max(1, $pengaduans->currentPage() - 2), min($pengaduans->lastPage(), $pengaduans->currentPage() + 2)) as $page => $url)
-                    <a href="{{ $url }}"
-                       class="flex items-center justify-center w-9 h-9 rounded-lg text-sm font-medium transition-colors {{ $page === $pengaduans->currentPage() ? 'bg-green-700 text-white' : 'border border-slate-300 text-slate-600 hover:bg-slate-50' }}">
-                        {{ $page }}
-                    </a>
+                    @if ($page === $pengaduans->currentPage())
+                        <span aria-current="page" class="flex h-9 w-9 items-center justify-center rounded-lg bg-green-700 text-sm font-medium text-white">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <a href="{{ $url }}" aria-label="Halaman {{ $page }}"
+                           class="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                            {{ $page }}
+                        </a>
+                    @endif
                 @endforeach
 
-                <a href="{{ $pengaduans->nextPageUrl() ?? '#' }}"
-                   class="flex items-center justify-center w-9 h-9 rounded-lg border border-slate-300 text-slate-500 {{ $pengaduans->hasMorePages() ? 'hover:bg-slate-50 hover:border-slate-400' : 'opacity-40 pointer-events-none' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                </a>
-            </div>
+                @if ($pengaduans->hasMorePages())
+                    <a href="{{ $pengaduans->nextPageUrl() }}" rel="next"
+                       class="rounded-lg border border-slate-300 px-2 sm:px-3 py-2 text-xs sm:text-sm text-slate-600 hover:bg-slate-50">
+                        Berikutnya
+                    </a>
+                @else
+                    <span aria-disabled="true" class="rounded-lg border border-slate-200 px-2 sm:px-3 py-2 text-xs sm:text-sm text-slate-400">
+                        Berikutnya
+                    </span>
+                @endif
+            </nav>
         </div>
     @endif
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -149,6 +184,53 @@ document.addEventListener('DOMContentLoaded', () => {
         el.textContent = '0';
         requestAnimationFrame(tick);
     });
+
+    const chartCanvas = document.getElementById('pengaduanChart');
+
+    if (chartCanvas) {
+        new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: {{ Illuminate\Support\Js::from($chartLabels) }},
+                datasets: [{
+                    label: 'Jumlah Pengaduan',
+                    data: {{ Illuminate\Support\Js::from($chartData) }},
+                    backgroundColor: 'rgba(21, 128, 61, 0.72)',
+                    borderColor: 'rgb(21, 128, 61)',
+                    borderWidth: 1,
+                    borderRadius: 6,
+                    maxBarThickness: 48,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: reduceMotion ? 0 : 800,
+                    easing: 'easeOutQuart',
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: items => items[0].label,
+                            label: context => `${context.parsed.y} pengaduan`,
+                        },
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0, stepSize: 1 },
+                        title: { display: true, text: 'Jumlah Pengaduan' },
+                    },
+                    x: {
+                        grid: { display: false },
+                    },
+                },
+            },
+        });
+    }
 });
 </script>
 

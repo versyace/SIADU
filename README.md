@@ -21,6 +21,10 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## Dashboard admin
+
+The admin dashboard includes an `.xlsx` export powered by `maatwebsite/excel` 3.1. Enable the PHP `gd` and `zip` extensions in the active `php.ini` before installing dependencies or running the application.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.

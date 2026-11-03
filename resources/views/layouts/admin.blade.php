@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Dashboard Admin') - SIADU SARANA</title>
+    <title>@yield('title', 'Dashboard Admin') - SIADU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2">
                 <img src="{{ asset('images/logo_smk.png') }}" alt="Logo SMK Negeri 5 Surakarta" class="w-9 h-9 object-contain">
                 <div class="leading-tight">
-                    <p class="font-semibold text-slate-800">SIADU SARANA</p>
+                    <p class="font-semibold text-slate-800">SIADU</p>
                     <p class="text-xs text-slate-500">Dashboard Admin</p>
                 </div>
             </a>
