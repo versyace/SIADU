@@ -8,6 +8,7 @@
     <p class="text-slate-500 mt-1 text-sm">
         Masukkan kode pengaduan untuk memantau tahapan perbaikan sarana sekolah.
     </p>
+    <p id="riwayatStatus" role="status" aria-live="polite" class="hidden mt-4 rounded-lg border px-3 py-2 text-sm"></p>
 
     {{-- Form Pencarian --}}
     <form action="{{ route('pengaduan.track.form') }}" method="GET" class="mt-6 flex w-full gap-2">
@@ -31,9 +32,13 @@
 
     {{-- Riwayat Aduan di Perangkat Ini --}}
     <div id="riwayatBox" class="hidden mt-6">
-        <p class="text-sm font-semibold text-slate-700 mb-2">
-            Aduan di perangkat ini
-        </p>
+        <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
+            <p class="text-sm font-semibold text-slate-700">Aduan di perangkat ini</p>
+            <button type="button" onclick="openClearHistoryModal(this)"
+                    class="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-50">
+                Bersihkan Riwayat
+            </button>
+        </div>
 
         <div id="riwayatList" class="flex flex-wrap gap-2"></div>
     </div>
@@ -42,12 +47,12 @@
     <div class="mt-6 space-y-4">
 
         {{-- Pesan Jika Pengaduan Tidak Ditemukan --}}
-        @if ($query !== '' && $hasil->isEmpty())
-            <div class="text-center text-sm text-slate-500 bg-white border border-slate-200 rounded-2xl shadow-sm py-10">
-                Tidak ada pengaduan ditemukan untuk "{{ $query }}".<br>
-                Pastikan kode pengaduan sudah benar.
-            </div>
-        @endif
+       @if ($query !== '' && $hasil->isEmpty())
+    <div class="text-center text-sm text-slate-500 bg-white border border-slate-200 rounded-2xl shadow-sm py-10">
+        Pengaduan tidak ditemukan atau telah dihapus oleh pihak administrasi.<br>
+        Pastikan kode pengaduan yang Anda masukkan sudah benar.
+    </div>
+@endif
 
         {{-- Kartu Pengaduan --}}
         @foreach ($hasil as $item)
@@ -202,8 +207,126 @@
     </div>
 @endif
 
+<div id="clearHistoryConfirmModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 px-4 backdrop-blur-sm"
+     role="dialog" aria-modal="true" aria-labelledby="clearHistoryConfirmTitle" aria-describedby="clearHistoryConfirmMessage">
+    <div class="w-full max-w-sm rounded-2xl bg-white p-5 text-center shadow-xl sm:p-7">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+        </div>
+        <h2 id="clearHistoryConfirmTitle" class="text-lg font-bold text-slate-800">Bersihkan Riwayat?</h2>
+        <p id="clearHistoryConfirmMessage" class="mt-2 text-sm leading-relaxed text-slate-500">
+            Semua kode pengaduan yang tersimpan di perangkat ini akan dihapus. Data pengaduan tidak akan terhapus.
+        </p>
+        <div class="mt-5 grid grid-cols-2 gap-2">
+            <button type="button" id="cancelClearHistoryButton" onclick="closeClearHistoryModal()"
+                    class="w-full rounded-xl border border-slate-300 py-2.5 font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                Batal
+            </button>
+            <button type="button" id="confirmClearHistoryButton" onclick="clearRiwayatAduan()"
+                    class="w-full rounded-xl bg-red-600 py-2.5 font-medium text-white transition-colors hover:bg-red-700">
+                Ya, Bersihkan
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="clearHistoryNoticeModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 px-4 backdrop-blur-sm"
+     role="dialog" aria-modal="true" aria-labelledby="clearHistoryNoticeTitle" aria-describedby="clearHistoryNoticeMessage">
+    <div class="w-full max-w-sm rounded-2xl bg-white p-5 text-center shadow-xl sm:p-7">
+        <div id="clearHistoryNoticeIcon" class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75l2.25 2.25L15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+        <h2 id="clearHistoryNoticeTitle" class="text-lg font-bold text-slate-800">Riwayat Dibersihkan</h2>
+        <p id="clearHistoryNoticeMessage" class="mt-2 text-sm leading-relaxed text-slate-500"></p>
+        <button type="button" onclick="closeClearHistoryNotice()"
+                class="mt-5 w-full rounded-xl bg-green-700 py-2.5 font-medium text-white transition-colors hover:bg-green-800">
+            Oke, Mengerti
+        </button>
+    </div>
+</div>
+
 {{-- JavaScript --}}
 <script>
+    let clearHistoryTrigger = null;
+
+    function openClearHistoryModal(trigger) {
+        clearHistoryTrigger = trigger;
+        const modal = document.getElementById('clearHistoryConfirmModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+        document.getElementById('cancelClearHistoryButton').focus();
+    }
+
+    function closeClearHistoryModal() {
+        const modal = document.getElementById('clearHistoryConfirmModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+        clearHistoryTrigger?.focus();
+    }
+
+    function closeClearHistoryNotice() {
+        const modal = document.getElementById('clearHistoryNoticeModal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+        clearHistoryTrigger?.focus();
+    }
+
+    function clearRiwayatAduan() {
+        closeClearHistoryModal();
+        const noticeModal = document.getElementById('clearHistoryNoticeModal');
+        const noticeTitle = document.getElementById('clearHistoryNoticeTitle');
+        const noticeMessage = document.getElementById('clearHistoryNoticeMessage');
+        const noticeIcon = document.getElementById('clearHistoryNoticeIcon');
+
+        try {
+            localStorage.removeItem('riwayatAduan');
+            document.getElementById('riwayatList').replaceChildren();
+            document.getElementById('riwayatBox').classList.add('hidden');
+            noticeTitle.textContent = 'Riwayat Dibersihkan';
+            noticeMessage.textContent = 'Semua riwayat kode pengaduan berhasil dihapus dari perangkat ini.';
+            noticeIcon.className = 'mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-50 text-green-600';
+        } catch (error) {
+            noticeTitle.textContent = 'Riwayat Gagal Dibersihkan';
+            noticeMessage.textContent = 'Periksa pengaturan penyimpanan browser Anda, lalu coba lagi.';
+            noticeIcon.className = 'mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50 text-red-600';
+            noticeIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+        }
+
+        noticeModal.classList.remove('hidden');
+        noticeModal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    document.getElementById('clearHistoryConfirmModal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            closeClearHistoryModal();
+        }
+    });
+
+    document.getElementById('clearHistoryNoticeModal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            closeClearHistoryNotice();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        const confirmModal = document.getElementById('clearHistoryConfirmModal');
+        const noticeModal = document.getElementById('clearHistoryNoticeModal');
+
+        if (event.key === 'Escape' && !confirmModal.classList.contains('hidden')) {
+            closeClearHistoryModal();
+        } else if (event.key === 'Escape' && !noticeModal.classList.contains('hidden')) {
+            closeClearHistoryNotice();
+        }
+    });
+
     function salinKodeAduan(btn) {
         const kode = document.getElementById('kodeAduanText').textContent.trim();
         const label = document.getElementById('salinLabel');

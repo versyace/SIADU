@@ -21,6 +21,8 @@ Route::post('/admin/logout', [AuthController::class, 'logout'])->name('admin.log
 Route::middleware('admin.auth')->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/pengaduan/rekap/excel', [DashboardController::class, 'export'])->name('admin.pengaduan.export');
+    Route::delete('/pengaduan', [DashboardController::class, 'destroyAll'])->name('admin.pengaduan.destroyAll');
+    Route::delete('/pengaduan/{pengaduan}', [DashboardController::class, 'destroy'])->name('admin.pengaduan.destroy');
     Route::get('/pengaduan/{pengaduan}', [DashboardController::class, 'show'])->name('admin.pengaduan.show');
     Route::put('/pengaduan/{pengaduan}', [DashboardController::class, 'updateStatus'])->name('admin.pengaduan.update');
 });

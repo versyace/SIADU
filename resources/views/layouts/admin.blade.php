@@ -26,7 +26,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-b from-green-50 via-white to-slate-50 min-h-screen flex flex-col">
+<body class="@yield('body-class', 'bg-gradient-to-b from-green-50 via-white to-slate-50') min-h-screen flex flex-col">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
@@ -52,11 +52,16 @@
 
     <main class="flex-1">
         <div class="page-enter max-w-6xl mx-auto px-4 py-8">
-            @if (session('success'))
-                <div class="mb-4 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm px-4 py-3">
-                    {{ session('success') }}
-                </div>
-            @endif
+            @unless (request()->routeIs('admin.dashboard'))
+                @foreach (['success' => 'green', 'warning' => 'amber', 'error' => 'red'] as $messageType => $messageColor)
+                    @if (session($messageType))
+                        <div role="{{ $messageType === 'error' ? 'alert' : 'status' }}"
+                             class="mb-4 rounded-lg border border-{{ $messageColor }}-200 bg-{{ $messageColor }}-50 px-4 py-3 text-sm text-{{ $messageColor }}-800">
+                            {{ session($messageType) }}
+                        </div>
+                    @endif
+                @endforeach
+            @endunless
             @yield('content')
         </div>
     </main>

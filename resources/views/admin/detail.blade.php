@@ -2,6 +2,22 @@
 
 @section('title', 'Detail Pengaduan #' . $pengaduan->kode_aduan)
 
+@section('body-class')
+    @switch($pengaduan->status)
+        @case('dilaporkan')
+            bg-gradient-to-b from-blue-50 via-white to-slate-50
+            @break
+        @case('proses')
+            bg-gradient-to-b from-amber-50 via-white to-slate-50
+            @break
+        @case('selesai')
+            bg-gradient-to-b from-green-50 via-white to-slate-50
+            @break
+        @default
+            bg-gradient-to-b from-green-50 via-white to-slate-50
+    @endswitch
+@endsection
+
 @section('content')
 <a href="{{ route('admin.dashboard') }}" class="text-sm text-slate-500 hover:text-green-700">&larr; Kembali ke Dashboard</a>
 

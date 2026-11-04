@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pengaduan;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PengaduanController extends Controller
 {
@@ -18,9 +19,34 @@ class PengaduanController extends Controller
     {
         $validated = $request->validate([
             'nama' => ['required', 'string', 'max:100'],
-            'kelas' => ['required', 'string', 'max:50'],
-            'lokasi' => ['required', 'string', 'max:150'],
-            'fasilitas' => ['required', 'string', 'max:150'],
+            'kelas' => ['required', Rule::in([
+                'XI RPL A',
+                'XI RPL B',
+                'XI RPL C',
+                'XII RPL A',
+                'XII RPL B',
+                'XII RPL C',
+            ])],
+            'lokasi' => ['required', Rule::in([
+                'R201',
+                'R202',
+                'R203',
+                'Lab ASM 1',
+                'Lab ASM 2',
+                'Lab ASM 3',
+                'Lainnya',
+            ])],
+            'lokasi_lainnya' => ['required_if:lokasi,Lainnya', 'nullable', 'string', 'max:140'],
+            'fasilitas' => ['required', Rule::in([
+                'AC',
+                'Internet',
+                'Monitor',
+                'Proyektor',
+                'Mouse',
+                'PC',
+                'Lainnya',
+            ])],
+            'fasilitas_lainnya' => ['required_if:fasilitas,Lainnya', 'nullable', 'string', 'max:140'],
             'deskripsi' => ['required', 'string', 'max:2000'],
             'foto' => ['required', 'image', 'max:5120'], // maks 5MB
         ], [
@@ -31,10 +57,22 @@ class PengaduanController extends Controller
             'nama' => 'Nama Lengkap Siswa',
             'kelas' => 'Kelas',
             'lokasi' => 'Lokasi Sarana',
+            'lokasi_lainnya' => 'Keterangan Lokasi',
             'fasilitas' => 'Fasilitas yang Dilaporkan',
+            'fasilitas_lainnya' => 'Keterangan Fasilitas',
             'deskripsi' => 'Keterangan Kerusakan',
             'foto' => 'Upload Bukti Foto',
         ]);
+
+        if ($validated['lokasi'] === 'Lainnya') {
+            $validated['lokasi'] = 'Lainnya: '.$validated['lokasi_lainnya'];
+        }
+
+        if ($validated['fasilitas'] === 'Lainnya') {
+            $validated['fasilitas'] = 'Lainnya: '.$validated['fasilitas_lainnya'];
+        }
+
+        unset($validated['lokasi_lainnya'], $validated['fasilitas_lainnya']);
 
         $path = $request->file('foto')->store('bukti-pengaduan', 'public');
 
@@ -47,7 +85,7 @@ class PengaduanController extends Controller
 
         return redirect()
             ->route('pengaduan.track.form')
-            ->with('success', 'Pengaduan berhasil dikirim! Kode aduanmu: ' . $pengaduan->kode_aduan)
+            ->with('success', 'Pengaduan berhasil dikirim! Kode aduanmu: '.$pengaduan->kode_aduan)
             ->with('kode_aduan', $pengaduan->kode_aduan);
     }
 
@@ -61,7 +99,7 @@ class PengaduanController extends Controller
 
         // kalau 8 karakter, tambahkan tanda hubung di tengah (K7M2QX9P -> K7M2-QX9P)
         if (strlen($query) === 8) {
-            $query = substr($query, 0, 4) . '-' . substr($query, 4);
+            $query = substr($query, 0, 4).'-'.substr($query, 4);
         }
 
         $hasil = collect();
