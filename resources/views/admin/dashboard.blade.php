@@ -202,7 +202,7 @@
 
         <a href="{{ route('admin.pengaduan.show', $item) }}"
            class="inline-flex h-9 items-center justify-center rounded-lg bg-green-700 px-3 text-sm font-medium text-white transition-colors hover:bg-green-800">
-            Detail &rarr;
+            Detail
         </a>
     </div>
 </td>

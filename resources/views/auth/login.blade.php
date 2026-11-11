@@ -10,7 +10,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
             </svg>
         </div>
-        <h1 class="text-xl font-bold text-slate-800 tracking-tight">Login Admin</h1>
+        <h1 class="text-xl font-bold text-slate-800 tracking-tight">Masuk Admin</h1>
         <p class="text-slate-500 text-sm mt-1 mb-6">
             Silakan masuk dengan akun petugas untuk mengakses dashboard laporan.
         </p>
@@ -44,7 +44,7 @@
             </div>
             <button type="submit"
                     class="w-full bg-green-700 hover:bg-green-800 active:bg-green-900 text-white font-medium rounded-xl py-3 shadow-sm transition-colors">
-                Login
+                Masuk
             </button>
         </form>
 

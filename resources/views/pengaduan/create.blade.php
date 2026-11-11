@@ -13,10 +13,11 @@
     </div>
 
     <form id="pengaduanForm" action="{{ route('pengaduan.store') }}" method="POST" enctype="multipart/form-data" novalidate
-          class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 sm:p-8 space-y-6">
+          class="bg-white border border-slate-200 rounded-2xl shadow-sm px-6 pt-4 pb-6 sm:px-8 sm:pt-5 sm:pb-8 space-y-6">
+
         @csrf
 
-        <div class="mt-3 flex w-full items-start gap-1 rounded-xl border border-green-100 bg-green-50 px-3 py-2.5 text-sm text-green-800">
+        <div class="mt-1 flex w-full items-start gap-1 rounded-xl border border-green-100 bg-green-50 px-3 py-2.5 text-sm text-green-800">
             <p>
                 <span class="font-semibold">✓ Privasi Pelapor Terjaga</span><br>
                 Nama dan kelas tidak akan ditampilkan kepada publik.
@@ -165,7 +166,6 @@
         const dropzone = document.getElementById('dropzone');
         const fotoInput = document.getElementById('foto');
 
-        // Mengatur warna placeholder dan teks dropdown
         function updateSelectColor(select) {
             if (select.value === '') {
                 select.classList.remove('text-slate-700');

@@ -65,11 +65,11 @@ class PengaduanController extends Controller
         ]);
 
         if ($validated['lokasi'] === 'Lainnya') {
-            $validated['lokasi'] = 'Lainnya: '.$validated['lokasi_lainnya'];
+            $validated['lokasi'] = $validated['lokasi_lainnya'];
         }
 
         if ($validated['fasilitas'] === 'Lainnya') {
-            $validated['fasilitas'] = 'Lainnya: '.$validated['fasilitas_lainnya'];
+            $validated['fasilitas'] = $validated['fasilitas_lainnya'];
         }
 
         unset($validated['lokasi_lainnya'], $validated['fasilitas_lainnya']);
@@ -85,7 +85,7 @@ class PengaduanController extends Controller
 
         return redirect()
             ->route('pengaduan.track.form')
-            ->with('success', 'Pengaduan berhasil dikirim! Kode aduanmu: '.$pengaduan->kode_aduan)
+            ->with('success', 'Pengaduan berhasil dikirim! Kode aduanmu: ' . $pengaduan->kode_aduan)
             ->with('kode_aduan', $pengaduan->kode_aduan);
     }
 
@@ -99,7 +99,7 @@ class PengaduanController extends Controller
 
         // kalau 8 karakter, tambahkan tanda hubung di tengah (K7M2QX9P -> K7M2-QX9P)
         if (strlen($query) === 8) {
-            $query = substr($query, 0, 4).'-'.substr($query, 4);
+            $query = substr($query, 0, 4) . '-' . substr($query, 4);
         }
 
         $hasil = collect();
